@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <linearGradient id="dysonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Основной корпус -->
+  <rect x="100" y="80" width="100" height="120" rx="15" fill="url(#dysonGrad)" stroke="#cbd5e1" stroke-width="2"/>
+  
+  <!-- Ручка -->
+  <rect x="120" y="40" width="60" height="50" rx="8" fill="url(#handleGrad)"/>
+  
+  <!-- Насадка -->
+  <rect x="80" y="200" width="140" height="40" rx="20" fill="url(#dysonGrad)" stroke="#cbd5e1" stroke-width="2"/>
+  
+  <!-- Лазерная подсветка -->
+  <circle cx="150" cy="220" r="8" fill="#ef4444"/>
+  <circle cx="150" cy="220" r="4" fill="#fca5a5"/>
+  
+  <!-- Кнопки управления -->
+  <circle cx="130" cy="140" r="8" fill="#64748b"/>
+  <circle cx="170" cy="140" r="8" fill="#64748b"/>
+  
+  <!-- Индикатор -->
+  <circle cx="150" cy="160" r="4" fill="#10b981"/>
+  
+  <!-- Логотип Dyson -->
+  <text x="150" y="190" text-anchor="middle" fill="#64748b" font-family="Arial" font-size="10" font-weight="bold">DYSON</text>
+  
+  <!-- Трубка -->
+  <rect x="145" y="200" width="10" height="20" fill="#94a3b8"/>
+</svg>

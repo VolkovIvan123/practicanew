@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <linearGradient id="watchGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="screenGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Корпус часов -->
+  <circle cx="150" cy="150" r="80" fill="url(#watchGrad)" stroke="#475569" stroke-width="3"/>
+  
+  <!-- Экран -->
+  <circle cx="150" cy="150" r="65" fill="url(#screenGrad5)"/>
+  
+  <!-- Циферблат -->
+  <circle cx="150" cy="150" r="60" fill="none" stroke="#64748b" stroke-width="1"/>
+  
+  <!-- Стрелки -->
+  <line x1="150" y1="150" x2="150" y2="100" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
+  <line x1="150" y1="150" x2="180" y2="150" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="150" cy="150" r="4" fill="#64748b"/>
+  
+  <!-- Цифры -->
+  <text x="150" y="90" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">12</text>
+  <text x="210" y="155" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">3</text>
+  <text x="150" y="220" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">6</text>
+  <text x="90" y="155" text-anchor="middle" fill="white" font-family="Arial" font-size="12" font-weight="bold">9</text>
+  
+  <!-- Ремешок -->
+  <rect x="70" y="150" width="20" height="60" rx="10" fill="#64748b"/>
+  <rect x="210" y="150" width="20" height="60" rx="10" fill="#64748b"/>
+  
+  <!-- Кнопка -->
+  <rect x="230" y="140" width="8" height="20" rx="4" fill="#64748b"/>
+  
+  <!-- Цифровое время -->
+  <text x="150" y="170" text-anchor="middle" fill="white" font-family="Arial" font-size="10">14:30</text>
+  
+  <!-- Логотип Apple -->
+  <text x="150" y="190" text-anchor="middle" fill="#64748b" font-family="Arial" font-size="6">Apple Watch</text>
+</svg>

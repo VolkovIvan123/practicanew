@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <linearGradient id="airpodsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="budGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Левое ухо -->
+  <ellipse cx="100" cy="150" rx="25" ry="35" fill="url(#budGrad)" stroke="#475569" stroke-width="2"/>
+  <ellipse cx="100" cy="150" rx="20" ry="30" fill="#0f172a"/>
+  
+  <!-- Правое ухо -->
+  <ellipse cx="200" cy="150" rx="25" ry="35" fill="url(#budGrad)" stroke="#475569" stroke-width="2"/>
+  <ellipse cx="200" cy="150" rx="20" ry="30" fill="#0f172a"/>
+  
+  <!-- Соединительный провод -->
+  <path d="M125 150 Q150 120 175 150" stroke="#64748b" stroke-width="8" fill="none" stroke-linecap="round"/>
+  
+  <!-- Кейс -->
+  <rect x="130" y="200" width="40" height="60" rx="8" fill="url(#airpodsGrad)" stroke="#cbd5e1" stroke-width="1"/>
+  
+  <!-- Крышка кейса -->
+  <rect x="135" y="195" width="30" height="10" rx="5" fill="#e2e8f0"/>
+  
+  <!-- Индикатор -->
+  <circle cx="150" cy="230" r="3" fill="#10b981"/>
+  
+  <!-- Логотип Apple на кейсе -->
+  <text x="150" y="250" text-anchor="middle" fill="#64748b" font-family="Arial" font-size="8">AirPods</text>
+</svg>

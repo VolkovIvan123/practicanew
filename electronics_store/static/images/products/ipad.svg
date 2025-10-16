@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <defs>
+    <linearGradient id="ipadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="screenGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Планшет -->
+  <rect x="50" y="40" width="200" height="220" rx="20" fill="url(#ipadGrad)" stroke="#cbd5e1" stroke-width="2"/>
+  
+  <!-- Экран -->
+  <rect x="60" y="60" width="180" height="180" rx="15" fill="url(#screenGrad4)"/>
+  
+  <!-- Кнопка домой -->
+  <rect x="140" y="250" width="20" height="4" rx="2" fill="#64748b"/>
+  
+  <!-- Камера -->
+  <circle cx="150" cy="50" r="6" fill="#1e293b"/>
+  <circle cx="150" cy="50" r="3" fill="#0f172a"/>
+  
+  <!-- Иконки на экране -->
+  <rect x="80" y="80" width="35" height="35" rx="6" fill="#3b82f6"/>
+  <rect x="125" y="80" width="35" height="35" rx="6" fill="#10b981"/>
+  <rect x="170" y="80" width="35" height="35" rx="6" fill="#f59e0b"/>
+  <rect x="215" y="80" width="35" height="35" rx="6" fill="#ef4444"/>
+  
+  <rect x="80" y="125" width="35" height="35" rx="6" fill="#8b5cf6"/>
+  <rect x="125" y="125" width="35" height="35" rx="6" fill="#06b6d4"/>
+  <rect x="170" y="125" width="35" height="35" rx="6" fill="#f97316"/>
+  <rect x="215" y="125" width="35" height="35" rx="6" fill="#84cc16"/>
+  
+  <rect x="80" y="170" width="35" height="35" rx="6" fill="#ec4899"/>
+  <rect x="125" y="170" width="35" height="35" rx="6" fill="#14b8a6"/>
+  <rect x="170" y="170" width="35" height="35" rx="6" fill="#f59e0b"/>
+  <rect x="215" y="170" width="35" height="35" rx="6" fill="#6366f1"/>
+  
+  <!-- Панель задач -->
+  <rect x="60" y="200" width="180" height="30" fill="#1e293b"/>
+  <circle cx="80" cy="215" r="4" fill="#10b981"/>
+  <circle cx="100" cy="215" r="4" fill="#3b82f6"/>
+  <circle cx="120" cy="215" r="4" fill="#f59e0b"/>
+  <circle cx="140" cy="215" r="4" fill="#ef4444"/>
+  <circle cx="160" cy="215" r="4" fill="#8b5cf6"/>
+  <circle cx="180" cy="215" r="4" fill="#06b6d4"/>
+  <circle cx="200" cy="215" r="4" fill="#f97316"/>
+  <circle cx="220" cy="215" r="4" fill="#84cc16"/>
+</svg>

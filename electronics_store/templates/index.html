@@ -2,75 +2,165 @@
 {% load static %}
 
 {% block content %}
-<!-- Заголовок (девиз сайта) -->
-<div class="row mb-5">
-    <div class="col text-center">
-        <h1 class="display-4">Лучшая электроника по доступным ценам!</h1>
-        <p class="lead">Техника будущего уже сегодня в нашем магазине</p>
+<!-- Главный слайдер с акциями -->
+<div class="container-fluid px-0">
+    <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
+        </div>
+        
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'images/slide1.svg' %}" class="d-block w-100" alt="Акция Apple">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h2>🔥 Горячие скидки на технику Apple!</h2>
+                    <p class="fs-4">Скидки до 50% на iPhone, MacBook и iPad</p>
+                    <button class="btn btn-warning btn-lg">Узнать больше</button>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/slide2.svg' %}" class="d-block w-100" alt="Новые поступления">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h2>🚀 Новые поступления</h2>
+                    <p class="fs-4">Последние модели смартфонов и ноутбуков уже в продаже</p>
+                    <button class="btn btn-primary btn-lg">Смотреть новинки</button>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/slide3.svg' %}" class="d-block w-100" alt="Бесплатная доставка">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded">
+                    <h2>📦 Бесплатная доставка</h2>
+                    <p class="fs-4">При заказе от 10 000 рублей - доставка бесплатно!</p>
+                    <button class="btn btn-success btn-lg">Сделать заказ</button>
+                </div>
+            </div>
+        </div>
+        
+        <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
     </div>
 </div>
 
-<!-- Слайдер -->
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
-            </div>
-            
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="{% static 'images/slide1.jpg' %}" class="d-block w-100" alt="Акция 1">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Специальные предложения</h5>
-                        <p>Скидки до 50% на технику Apple</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="{% static 'images/slide2.jpg' %}" class="d-block w-100" alt="Акция 2">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Новые поступления</h5>
-                        <p>Последние модели смартфонов уже в продаже</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="{% static 'images/slide3.jpg' %}" class="d-block w-100" alt="Акция 3">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Бесплатная доставка</h5>
-                        <p>При заказе от 10 000 рублей</p>
-                    </div>
-                </div>
-            </div>
-            
-            <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
+<!-- Заголовок и девиз -->
+<div class="container mt-5">
+    <div class="row text-center mb-5">
+        <div class="col">
+            <h1 class="display-3 fw-bold mb-4">TechStore - технологии будущего уже сегодня!</h1>
+            <p class="lead fs-3 mb-0">Лучшая электроника по доступным ценам с гарантией качества</p>
         </div>
     </div>
-</div>
 
-<!-- Дополнительные разделы -->
-<div class="row mt-5">
-    <div class="col-md-3">
-        <h5>О доставке</h5>
-        <p>Быстрая доставка по всему городу</p>
+    <!-- Преимущества -->
+    <div class="row mb-5">
+        <div class="col-md-3 text-center">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3>🚚</h3>
+                    <h5>Быстрая доставка</h5>
+                    <p>Доставим за 1-2 дня по всей России</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 text-center">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3>🛡️</h3>
+                    <h5>Официальная гарантия</h5>
+                    <p>Гарантия до 3 лет на всю технику</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 text-center">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3>💳</h3>
+                    <h5>Удобная оплата</h5>
+                    <p>Наличные, карты, рассрочка</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 text-center">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3>⭐</h3>
+                    <h5>Отзывы покупателей</h5>
+                    <p>Более 10 000 довольных клиентов</p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-3">
-        <h5>Адреса</h5>
-        <p>Наши магазины в вашем городе</p>
-    </div>
-    <div class="col-md-3">
-        <h5>Гарантии</h5>
-        <p>Официальная гарантия на всю технику</p>
-    </div>
-    <div class="col-md-3">
-        <h5>Отзывы</h5>
-        <p>Что говорят наши клиенты</p>
+
+    <!-- Популярные категории -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">Популярные категории</h2>
+        </div>
+        <div class="col-md-2 col-6 mb-3 text-center">
+            <a href="#" class="text-decoration-none">
+                <div class="card category-card">
+                    <div class="card-body">
+                        <h4>📱</h4>
+                        <p>Смартфоны</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-2 col-6 mb-3 text-center">
+            <a href="#" class="text-decoration-none">
+                <div class="card category-card">
+                    <div class="card-body">
+                        <h4>💻</h4>
+                        <p>Ноутбуки</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-2 col-6 mb-3 text-center">
+            <a href="#" class="text-decoration-none">
+                <div class="card category-card">
+                    <div class="card-body">
+                        <h4>🎧</h4>
+                        <p>Наушники</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-2 col-6 mb-3 text-center">
+            <a href="#" class="text-decoration-none">
+                <div class="card category-card">
+                    <div class="card-body">
+                        <h4>⌚</h4>
+                        <p>Гаджеты</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-2 col-6 mb-3 text-center">
+            <a href="#" class="text-decoration-none">
+                <div class="card category-card">
+                    <div class="card-body">
+                        <h4>📺</h4>
+                        <p>ТВ и аудио</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-2 col-6 mb-3 text-center">
+            <a href="#" class="text-decoration-none">
+                <div class="card category-card">
+                    <div class="card-body">
+                        <h4>🏠</h4>
+                        <p>Умный дом</p>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}

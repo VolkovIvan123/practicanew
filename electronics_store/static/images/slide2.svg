@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 600">
+  <defs>
+    <linearGradient id="g2" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#198754"/>
+      <stop offset="100%" stop-color="#20c997"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="600" fill="url(#g2)"/>
+  <g fill="#ffffff" opacity="0.15">
+    <rect x="120" y="80" width="220" height="140" rx="16"/>
+    <rect x="1360" y="380" width="180" height="120" rx="16"/>
+    <rect x="760" y="120" width="160" height="110" rx="16"/>
+  </g>
+  <text x="120" y="260" font-family="Segoe UI, Arial" font-size="72" fill="#ffffff" font-weight="700">Новые поступления</text>
+  <text x="120" y="340" font-family="Segoe UI, Arial" font-size="40" fill="#e9ecef">Последние модели уже на складе</text>
+</svg>
+

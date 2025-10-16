@@ -10,12 +10,12 @@
 </head>
 <body>
     <!-- Навигационное меню -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <!-- Логотип и название сайта -->
-            <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="{% static 'images/logo.png' %}" alt="Логотип" width="30" height="30" class="d-inline-block align-text-top">
-                Магазин электроники
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+                <img src="{% static 'images/Logo.png' %}" alt="Логотип" width="50" height="50" class="me-2">
+                <span class="fs-3 fw-bold">TechStore</span>
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -25,37 +25,57 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'catalog' %}">Каталог</a>
+                        <a class="nav-link fs-5" href="{% url 'home' %}">Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contacts' %}">Контакты</a>
+                        <a class="nav-link fs-5" href="{% url 'catalog' %}">Каталог</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fs-5" href="{% url 'contacts' %}">Контакты</a>
                     </li>
                 </ul>
                 
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <a class="nav-link" href="{% url 'profile' %}">Профиль</a>
-                        <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+                        <a class="nav-link fs-5" href="{% url 'profile' %}">👤 Профиль</a>
+                        <a class="nav-link fs-5" href="{% url 'logout' %}">🚪 Выйти</a>
                     {% else %}
-                        <a class="nav-link" href="{% url 'login' %}">Авторизация</a>
-                        <a class="nav-link" href="{% url 'register' %}">Регистрация</a>
+                        <a class="nav-link fs-5" href="{% url 'login' %}">🔑 Авторизация</a>
+                        <a class="nav-link fs-5" href="{% url 'register' %}">📝 Регистрация</a>
                     {% endif %}
-                    <a class="nav-link" href="{% url 'cart' %}">Корзина</a>
+                    <a class="nav-link fs-5" href="{% url 'cart' %}">🛒 Корзина</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Основной контент -->
-    <main class="container mt-4">
+    <main>
         {% block content %}
         {% endblock %}
     </main>
 
     <!-- Футер -->
     <footer class="bg-dark text-light mt-5 py-4">
-        <div class="container text-center">
-            <p>&copy; 2024 Магазин электроники. Все права защищены.</p>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>О нас</h5>
+                    <p>Лучший магазин электроники с 2024 года. Качество, гарантия, надежность.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Контакты</h5>
+                    <p>📞 +7 (999) 123-45-67</p>
+                    <p>✉️ info@techstore.ru</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Мы в соцсетях</h5>
+                    <p>📱 VK | Telegram | YouTube</p>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p>&copy; 2024 TechStore. Все права защищены.</p>
+            </div>
         </div>
     </footer>
 
