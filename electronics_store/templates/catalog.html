@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mb-4">Каталог товаров</h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action active">Все категории</a>
+            <a href="#" class="list-group-item list-group-item-action">Компьютеры</a>
+            <a href="#" class="list-group-item list-group-item-action">Ноутбуки</a>
+            <a href="#" class="list-group-item list-group-item-action">Телефоны</a>
+            <a href="#" class="list-group-item list-group-item-action">Наушники</a>
+            <a href="#" class="list-group-item list-group-item-action">Планшеты</a>
+            <a href="#" class="list-group-item list-group-item-action">Аксессуары</a>
+            <a href="#" class="list-group-item list-group-item-action">Холодильники</a>
+            <a href="#" class="list-group-item list-group-item-action">Микроволновки</a>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="row">
+            <!-- Пример товара -->
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="https://via.placeholder.com/200" class="card-img-top" alt="Товар">
+                    <div class="card-body">
+                        <h5 class="card-title">Модель X1</h5>
+                        <p class="card-text">Описание товара</p>
+                        <p class="card-text"><strong>25 000 ₽</strong></p>
+                        <button class="btn btn-primary">В корзину</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Добавьте больше товаров по аналогии -->
+        </div>
+    </div>
+</div>
+{% endblock %}

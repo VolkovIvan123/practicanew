@@ -1,0 +1,21 @@
+/* Дополнительные стили для кастомизации */
+.carousel-item {
+    height: 400px;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    height: 100%;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
