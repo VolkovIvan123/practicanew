@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 960px;">
+    <div class="row g-4">
+        <div class="col-md-6">
+            {% if product.image %}
+                <img class="img-fluid rounded shadow-sm" src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+                <img class="img-fluid rounded shadow-sm" src="{% static 'images/products/sony.svg' %}" alt="{{ product.name }}">
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1 class="h3">{{ product.name }}</h1>
+            <div class="h4 text-primary mb-3">{{ product.price }} ₽</div>
+            <dl class="row mb-4">
+                <dt class="col-sm-5">Категория</dt><dd class="col-sm-7">{{ product.category.name }}</dd>
+                <dt class="col-sm-5">Страна‑производитель</dt><dd class="col-sm-7">{{ product.country }}</dd>
+                <dt class="col-sm-5">Год выпуска</dt><dd class="col-sm-7">{{ product.year }}</dd>
+                <dt class="col-sm-5">Модель</dt><dd class="col-sm-7">{{ product.model }}</dd>
+            </dl>
+            <button class="btn btn-primary btn-lg">В корзину</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

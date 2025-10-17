@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.utils import timezone
 from django.db import transaction
-from .models import UserProfile, UserSession
+from .models import UserProfile, UserSession, Product, Category
 from django.views.decorators.http import require_POST
 import json
 import re
@@ -18,7 +18,36 @@ def home(request):
     return render(request, 'index.html')
 
 def catalog(request):
-    return render(request, 'catalog.html')
+    """Каталог с фильтрами и сортировкой, минимум JS, всё на сервере"""
+    qs = Product.objects.filter(in_stock=True)
+
+    # Фильтр по категории (slug)
+    category_slug = request.GET.get('category')
+    active_category = None
+    if category_slug:
+        active_category = Category.objects.filter(slug=category_slug).first()
+        if active_category:
+            qs = qs.filter(category=active_category)
+
+    # Сортировка
+    sort = request.GET.get('sort')  # year|name|price
+    sort_map = {
+        'year': 'year',
+        'name': 'name',
+        'price': 'price',
+    }
+    if sort in sort_map:
+        qs = qs.order_by(sort_map[sort])
+    else:
+        qs = qs.order_by('-created_at')  # по новизне
+
+    context = {
+        'products': qs.select_related('category'),
+        'categories': Category.objects.all(),
+        'active_category': active_category,
+        'active_sort': sort or 'new',
+    }
+    return render(request, 'catalog.html', context)
 
 def contacts(request):
     return render(request, 'contacts.html')
@@ -44,6 +73,13 @@ def logout_view(request):
 
 def cart(request):
     return render(request, 'cart.html')
+
+def product_detail(request, slug):
+    product = Product.objects.filter(slug=slug, in_stock=True).select_related('category').first()
+    if not product:
+        from django.http import Http404
+        raise Http404('Товар не найден или отсутствует в наличии')
+    return render(request, 'product_detail.html', { 'product': product })
 
 @ensure_csrf_cookie
 def login_view(request):

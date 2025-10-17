@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.home, name='home'),  # Главная страница
     path('catalog/', views.catalog, name='catalog'),
     path('contacts/', views.contacts, name='contacts'),
+    path('product/<slug:slug>/', views.product_detail, name='product_detail'),
     path('profile/', views.profile, name='profile'),
     path('cart/', views.cart, name='cart'),
     path('login/', views.login_view, name='login'),

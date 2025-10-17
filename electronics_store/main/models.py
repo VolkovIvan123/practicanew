@@ -3,6 +3,39 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+class Category(models.Model):
+    """Категория товара (например, лазерные/струйные/термо принтеры)"""
+    slug = models.SlugField(max_length=50, unique=True, verbose_name="Слаг")
+    name = models.CharField(max_length=100, unique=True, verbose_name="Название")
+
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+
+    def __str__(self):
+        return self.name
+
+class Product(models.Model):
+    """Товар каталога"""
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='products', verbose_name="Категория")
+    name = models.CharField(max_length=200, verbose_name="Наименование")
+    slug = models.SlugField(max_length=220, unique=True, verbose_name="Слаг")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
+    year = models.PositiveSmallIntegerField(verbose_name="Год выпуска")
+    country = models.CharField(max_length=100, verbose_name="Страна-производитель")
+    model = models.CharField(max_length=100, verbose_name="Модель")
+    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name="Фото")
+    in_stock = models.BooleanField(default=True, verbose_name="В наличии")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Добавлен")
+
+    class Meta:
+        verbose_name = "Товар"
+        verbose_name_plural = "Товары"
+        ordering = ['-created_at']  # по умолчанию новизна
+
+    def __str__(self):
+        return self.name
+
 class UserProfile(models.Model):
     """Расширенный профиль пользователя"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Пользователь")

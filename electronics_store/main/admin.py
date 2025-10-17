@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import UserProfile, UserSession
+from .models import UserProfile, UserSession, Category, Product
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
@@ -31,3 +31,15 @@ class UserSessionAdmin(admin.ModelAdmin):
 # Перерегистрируем User с новым админом
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = { 'slug': ('name',) }
+    search_fields = ('name',)
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'price', 'year', 'in_stock', 'created_at')
+    list_filter = ('category', 'in_stock', 'year', 'country')
+    search_fields = ('name', 'model')
+    prepopulated_fields = { 'slug': ('name',) }
