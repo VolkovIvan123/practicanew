@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 520px;">
+    <h1 class="mb-4 text-center">Вход</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <form id="loginForm" novalidate>
+                <div class="mb-3">
+                    <label class="form-label">Логин</label>
+                    <input type="text" class="form-control" id="login" required>
+                    <div class="invalid-feedback" id="err-login"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Пароль</label>
+                    <input type="password" class="form-control" id="password" required>
+                    <div class="invalid-feedback" id="err-password"></div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="alert alert-danger mt-3 d-none" id="authError">Неверный логин или пароль</div>
+</div>
+
+<script>
+(function(){
+    function setFieldError(id, message){
+        const input = document.getElementById(id);
+        const err = document.getElementById('err-' + id);
+        if(message){ input.classList.add('is-invalid'); err.textContent = message; }
+        else { input.classList.remove('is-invalid'); err.textContent = ''; }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e){
+        e.preventDefault();
+        const login = document.getElementById('login').value.trim();
+        const password = document.getElementById('password').value;
+        setFieldError('login', !login ? 'Укажите логин' : '');
+        setFieldError('password', !password ? 'Укажите пароль' : '');
+        if(!login || !password) return;
+        try{
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': (window.__csrftoken || '') },
+                body: JSON.stringify({ login, password })
+            });
+            const data = await res.json();
+            if(!data.ok){
+                document.getElementById('authError').classList.remove('d-none');
+                return;
+            }
+            window.location.href = '/';
+        }catch(err){
+            document.getElementById('authError').classList.remove('d-none');
+        }
+    });
+})();
+</script>
+{% endblock %}
+

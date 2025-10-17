@@ -1,0 +1,103 @@
+Руководство: Регистрация, авторизация и профиль в проекте
+
+1) Зависимости
+- Pillow — для поля ImageField (установлено: pip install Pillow)
+
+2) Настройки (electronics_store/electronics_store/settings.py)
+- DEBUG=True для локальной разработки
+- ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+- STATIC_URL, STATICFILES_DIRS уже настроены
+- MEDIA_URL = '/media/' и MEDIA_ROOT = BASE_DIR / 'media' (для аватаров)
+
+3) Корневые URL (electronics_store/electronics_store/urls.py)
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('main.urls')),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+4) URL приложения (electronics_store/main/urls.py)
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('catalog/', views.catalog, name='catalog'),
+    path('contacts/', views.contacts, name='contacts'),
+    path('profile/', views.profile, name='profile'),
+    path('cart/', views.cart, name='cart'),
+    path('login/', views.login_view, name='login'),
+    path('register/', views.register, name='register'),
+    path('logout/', views.logout_view, name='logout'),
+    # API
+    path('api/register', views.api_register, name='api_register'),
+    path('api/login', views.api_login, name='api_login'),
+    path('api/profile/update', views.api_profile_update, name='api_profile_update'),
+]
+
+5) Модели (electronics_store/main/models.py)
+- UserProfile: OneToOne с User, поля: patronymic, phone, birth_date, address, avatar, created_at, updated_at
+- Сигналы post_save: автоматическое создание профиля 
+- UserSession: фиксация входов (user, session_key, ip_address, user_agent, timestamps)
+
+6) Представления (electronics_store/main/views.py)
+Главные view:
+- @ensure_csrf_cookie home/login_view/register — отдают страницы и гарантируют выдачу cookie csrftoken
+- profile (login_required) — страница профиля, отдаёт user_profile и последние активные сессии
+- logout_view — выход и деактивация текущей сессии
+
+API:
+- api_register (POST JSON) — серверная валидация, создание User, заполнение first_name/last_name, при наличии patronymic сохраняет в user.userprofile
+  Поля входа: name, surname, patronymic (опц.), login, email, password, password_repeat, rules (bool)
+  Возврат: { ok: True } либо { ok: False, errors: {field: msg} }
+
+- api_login (POST JSON) — authenticate(username=login, password), login(request, user), создание записи в UserSession
+  Возврат: { ok: True } или ошибки
+
+- api_profile_update (POST JSON, login_required) — обновляет User.first_name/last_name и UserProfile.patronymic/phone/address
+  Возврат: { ok: True } или errors
+
+7) Шаблоны и JS
+Глобальный шаблон (electronics_store/templates/base.html):
+- Подключён Bootstrap и статика
+- Вставлен helper для CSRF, который читает csrftoken из cookies и кладёт в window.__csrftoken
+
+Страница регистрации (electronics_store/templates/register.html):
+- Форма с клиентской валидацией
+- Отправка fetch('/api/register', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': window.__csrftoken }, body: JSON.stringify(payload) })
+- При успехе: показывается 'Регистрация прошла успешно'
+
+Страница авторизации (electronics_store/templates/login.html):
+- Форма логина
+- fetch('/api/login', { method: 'POST', headers: {..., 'X-CSRFToken': window.__csrftoken}, body: JSON.stringify({ login, password }) })
+- При успехе: редирект на '/'
+
+Страница профиля (electronics_store/templates/profile.html):
+- Форма для first_name, last_name, patronymic, phone, address
+- fetch('/api/profile/update', POST JSON + X-CSRFToken)
+
+8) CSRF
+- Включён стандартный CsrfViewMiddleware
+- Страницы, с которых идут POST через fetch, получают cookie через @ensure_csrf_cookie
+- Все POST-запросы отправляют заголовок 'X-CSRFToken'
+
+9) Проверка (локально)
+1. Запуск: .\\venv\\Scripts\\Activate.ps1 и затем python manage.py runserver
+2. Регистрация: /register → заполнить форму → POST /api/register должен вернуть { ok: true }
+3. Вход: /login → правильные данные → POST /api/login вернёт { ok: true } и произойдёт переход на главную
+4. Профиль: /profile → изменить данные → POST /api/profile/update вернёт { ok: true }
+
+10) Типовые причины сбоев и решения
+- 403 при POST: отсутствует CSRF → убедиться, что cookie csrftoken есть и заголовок X-CSRFToken отправляется
+- 400 при регистрации: серверная валидация вернула errors — отобразятся под полями
+- 500 при регистрации: см. логи терминала; чаще всего связан с уникальностью логина/email
+
+Эти изменения уже внесены в репозиторий проекта в соответствующие файлы.
+

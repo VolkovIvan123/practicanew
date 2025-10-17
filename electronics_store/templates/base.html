@@ -80,6 +80,18 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // CSRF helper: получаем csrftoken из cookies и сохраняем глобально
+    (function(){
+        function getCookie(name){
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if(parts.length === 2) return parts.pop().split(';').shift();
+            return '';
+        }
+        window.__csrftoken = getCookie('csrftoken');
+    })();
+    </script>
     <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

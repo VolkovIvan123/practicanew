@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 720px;">
+    <h1 class="mb-4 text-center">Регистрация</h1>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <form id="registerForm" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Имя</label>
+                        <input type="text" class="form-control" id="name" placeholder="Иван" required>
+                        <div class="invalid-feedback" id="err-name"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Фамилия</label>
+                        <input type="text" class="form-control" id="surname" placeholder="Иванов" required>
+                        <div class="invalid-feedback" id="err-surname"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Отчество (необязательно)</label>
+                        <input type="text" class="form-control" id="patronymic" placeholder="Иванович">
+                        <div class="invalid-feedback" id="err-patronymic"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Логин</label>
+                        <input type="text" class="form-control" id="login" placeholder="ivan-90" required>
+                        <div class="invalid-feedback" id="err-login"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                        <div class="invalid-feedback" id="err-email"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Пароль</label>
+                        <input type="password" class="form-control" id="password" minlength="6" required>
+                        <div class="invalid-feedback" id="err-password"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Повторите пароль</label>
+                        <input type="password" class="form-control" id="password_repeat" minlength="6" required>
+                        <div class="invalid-feedback" id="err-password_repeat"></div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rules" required>
+                            <label class="form-check-label" for="rules">Соглашаюсь с правилами регистрации</label>
+                            <div class="invalid-feedback" id="err-rules"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 d-grid d-md-flex justify-content-md-end gap-2">
+                        <button type="submit" class="btn btn-primary px-4">Зарегистрироваться</button>
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary">У меня есть аккаунт</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="alert alert-success mt-3 d-none" id="regSuccess">Регистрация прошла успешно! Теперь вы можете войти.</div>
+</div>
+
+<script>
+(function(){
+    const regCyr = /^[А-Яа-яЁё\-\s]+$/;
+    const regLogin = /^[A-Za-z0-9\-]+$/;
+
+    function setFieldError(id, message){
+        const input = document.getElementById(id);
+        const err = document.getElementById('err-' + id);
+        if(message){
+            input.classList.add('is-invalid');
+            err.textContent = message;
+        } else {
+            input.classList.remove('is-invalid');
+            err.textContent = '';
+        }
+    }
+
+    function clientValidate(){
+        let ok = true;
+        const name = document.getElementById('name').value.trim();
+        const surname = document.getElementById('surname').value.trim();
+        const patronymic = document.getElementById('patronymic').value.trim();
+        const login = document.getElementById('login').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const password_repeat = document.getElementById('password_repeat').value;
+        const rules = document.getElementById('rules').checked;
+
+        setFieldError('name', (!name ? 'Заполните имя' : (!regCyr.test(name) ? 'Разрешены кириллица, пробел и тире' : '')));
+        if(!name || !regCyr.test(name)) ok = false;
+
+        setFieldError('surname', (!surname ? 'Заполните фамилию' : (!regCyr.test(surname) ? 'Разрешены кириллица, пробел и тире' : '')));
+        if(!surname || !regCyr.test(surname)) ok = false;
+
+        setFieldError('patronymic', patronymic && !regCyr.test(patronymic) ? 'Разрешены кириллица, пробел и тире' : '');
+        if(patronymic && !regCyr.test(patronymic)) ok = false;
+
+        setFieldError('login', (!login ? 'Укажите логин' : (!regLogin.test(login) ? 'Только латиница, цифры и тире' : '')));
+        if(!login || !regLogin.test(login)) ok = false;
+
+        setFieldError('email', (!email ? 'Укажите email' : ( !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'Некорректный email' : '')));
+        if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ok = false;
+
+        setFieldError('password', (!password ? 'Задайте пароль' : (password.length < 6 ? 'Минимум 6 символов' : '')));
+        if(!password || password.length < 6) ok = false;
+
+        setFieldError('password_repeat', (password_repeat !== password ? 'Пароли не совпадают' : ''));
+        if(password_repeat !== password) ok = false;
+
+        setFieldError('rules', (!rules ? 'Необходимо согласие' : ''));
+        if(!rules) ok = false;
+
+        return ok;
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', async function(e){
+        e.preventDefault();
+        if(!clientValidate()) return;
+        const payload = {
+            name: document.getElementById('name').value.trim(),
+            surname: document.getElementById('surname').value.trim(),
+            patronymic: document.getElementById('patronymic').value.trim(),
+            login: document.getElementById('login').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value,
+            password_repeat: document.getElementById('password_repeat').value,
+            rules: document.getElementById('rules').checked
+        };
+        try{
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': (window.__csrftoken || '') },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if(!data.ok){
+                for(const [field, msg] of Object.entries(data.errors || {})){
+                    setFieldError(field, msg);
+                }
+                return;
+            }
+            document.getElementById('regSuccess').classList.remove('d-none');
+            this.reset();
+        }catch(err){
+            alert('Ошибка соединения. Попробуйте позже.');
+        }
+    });
+})();
+</script>
+{% endblock %}
+
