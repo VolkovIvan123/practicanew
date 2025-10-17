@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import UserProfile, UserSession, Category, Product
+from .models import UserProfile, UserSession, Category, Product, Order, OrderItem
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
@@ -39,7 +39,17 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'price', 'year', 'in_stock', 'created_at')
+    list_display = ('name', 'category', 'price', 'year', 'stock', 'in_stock', 'created_at')
     list_filter = ('category', 'in_stock', 'year', 'country')
     search_fields = ('name', 'model')
     prepopulated_fields = { 'slug': ('name',) }
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'created_at', 'total_price')
+    date_hierarchy = 'created_at'
+    inlines = [OrderItemInline]

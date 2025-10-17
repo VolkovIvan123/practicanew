@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.utils import timezone
 from django.db import transaction
-from .models import UserProfile, UserSession, Product, Category
+from .models import UserProfile, UserSession, Product, Category, Order, OrderItem
 from django.views.decorators.http import require_POST
 import json
 import re
@@ -72,7 +72,18 @@ def logout_view(request):
     return redirect('home')
 
 def cart(request):
-    return render(request, 'cart.html')
+    # Корзина хранится в сессии как словарь {product_id: qty}
+    cart = request.session.get('cart', {})
+    items = []
+    total = 0
+    if cart:
+        products = Product.objects.filter(id__in=cart.keys())
+        for p in products:
+            qty = max(0, min(int(cart.get(str(p.id), 0)), p.stock))
+            line = float(p.price) * qty
+            total += line
+            items.append({ 'product': p, 'qty': qty, 'line': line })
+    return render(request, 'cart.html', { 'items': items, 'total': total })
 
 def product_detail(request, slug):
     product = Product.objects.filter(slug=slug, in_stock=True).select_related('category').first()
@@ -80,6 +91,70 @@ def product_detail(request, slug):
         from django.http import Http404
         raise Http404('Товар не найден или отсутствует в наличии')
     return render(request, 'product_detail.html', { 'product': product })
+
+@require_POST
+def api_cart_add(request):
+    data = _json_body(request)
+    product_id = str(data.get('product_id'))
+    delta = int(data.get('delta', 1))  # +1 или -1
+    cart = request.session.get('cart', {})
+    try:
+        p = Product.objects.get(id=product_id, in_stock=True)
+    except Product.DoesNotExist:
+        return JsonResponse({'ok': False, 'error': 'Товар недоступен'}, status=404)
+    current = int(cart.get(product_id, 0))
+    new_qty = max(0, min(current + delta, p.stock))
+    if new_qty == 0:
+        cart.pop(product_id, None)
+    else:
+        cart[product_id] = new_qty
+    request.session['cart'] = cart
+    return JsonResponse({'ok': True, 'qty': new_qty})
+
+@login_required
+@require_POST
+def api_checkout(request):
+    data = _json_body(request)
+    password = data.get('password') or ''
+    if not request.user.check_password(password):
+        return JsonResponse({'ok': False, 'error': 'Неверный пароль'}, status=400)
+
+    cart = request.session.get('cart', {})
+    if not cart:
+        return JsonResponse({'ok': False, 'error': 'Корзина пуста'}, status=400)
+
+    products = Product.objects.select_for_update().filter(id__in=cart.keys(), in_stock=True)
+    if products.count() == 0:
+        return JsonResponse({'ok': False, 'error': 'Товары недоступны'}, status=400)
+
+    # Создание заказа с проверкой остатков
+    try:
+        with transaction.atomic():
+            order = Order.objects.create(user=request.user, total_price=0)
+            total = 0
+            id_to_product = { str(p.id): p for p in products }
+            for pid, qty in cart.items():
+                p = id_to_product.get(str(pid))
+                if not p:
+                    continue
+                qty = max(0, min(int(qty), p.stock))
+                if qty == 0:
+                    continue
+                OrderItem.objects.create(order=order, product=p, quantity=qty, price=p.price)
+                p.stock -= qty
+                if p.stock == 0:
+                    p.in_stock = False
+                p.save()
+                total += float(p.price) * qty
+            if total == 0:
+                raise Exception('empty')
+            order.total_price = total
+            order.save()
+            # Очистить корзину
+            request.session['cart'] = {}
+            return JsonResponse({'ok': True, 'order_id': order.id, 'total': total})
+    except Exception:
+        return JsonResponse({'ok': False, 'error': 'Не удалось оформить заказ'}, status=500)
 
 @ensure_csrf_cookie
 def login_view(request):

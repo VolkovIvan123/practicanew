@@ -16,4 +16,6 @@ urlpatterns = [
     path('api/register', views.api_register, name='api_register'),
     path('api/login', views.api_login, name='api_login'),
     path('api/profile/update', views.api_profile_update, name='api_profile_update'),
+    path('api/cart/add', views.api_cart_add, name='api_cart_add'),
+    path('api/checkout', views.api_checkout, name='api_checkout'),
 ]

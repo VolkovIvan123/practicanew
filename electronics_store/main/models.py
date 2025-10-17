@@ -25,6 +25,7 @@ class Product(models.Model):
     country = models.CharField(max_length=100, verbose_name="Страна-производитель")
     model = models.CharField(max_length=100, verbose_name="Модель")
     image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name="Фото")
+    stock = models.PositiveIntegerField(default=0, verbose_name="Остаток на складе")
     in_stock = models.BooleanField(default=True, verbose_name="В наличии")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Добавлен")
 
@@ -35,6 +36,32 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+class Order(models.Model):
+    """Заказ пользователя"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создан")
+    total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Сумма")
+
+    class Meta:
+        verbose_name = "Заказ"
+        verbose_name_plural = "Заказы"
+
+    def __str__(self):
+        return f"Заказ #{self.id} от {self.created_at.strftime('%d.%m.%Y %H:%M')}"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name="Заказ")
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Товар")
+    quantity = models.PositiveIntegerField(verbose_name="Кол-во")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена за ед.")
+
+    class Meta:
+        verbose_name = "Позиция заказа"
+        verbose_name_plural = "Позиции заказа"
+
+    def line_total(self):
+        return self.price * self.quantity
 
 class UserProfile(models.Model):
     """Расширенный профиль пользователя"""

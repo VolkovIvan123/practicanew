@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 960px;">
+    <h1 class="mb-4">Корзина</h1>
+
+    {% if not items %}
+        <div class="alert alert-info">Ваша корзина пуста.</div>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th class="text-center" style="width:180px;">Кол-во</th>
+                        <th class="text-end">Сумма</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for it in items %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                {% if it.product.image %}
+                                    <img src="{{ it.product.image.url }}" alt="{{ it.product.name }}" style="width:64px;height:64px;object-fit:cover;" class="rounded border">
+                                {% endif %}
+                                <div>
+                                    <a href="{% url 'product_detail' it.product.slug %}" class="text-decoration-none">{{ it.product.name }}</a>
+                                    <div class="text-muted small">В наличии: {{ it.product.stock }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group" aria-label="qty">
+                                <button class="btn btn-outline-secondary btn-sm js-dec" data-id="{{ it.product.id }}">−</button>
+                                <span class="px-3 fw-semibold" id="qty-{{ it.product.id }}">{{ it.qty }}</span>
+                                <button class="btn btn-outline-secondary btn-sm js-inc" data-id="{{ it.product.id }}">+</button>
+                            </div>
+                        </td>
+                        <td class="text-end"><span id="line-{{ it.product.id }}">{{ it.line }}</span> ₽</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2" class="text-end">Итого:</th>
+                        <th class="text-end"><span id="cart-total">{{ total }}</span> ₽</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <form id="checkoutForm" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Пароль для подтверждения</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                        <div class="invalid-feedback" id="err-pass"></div>
+                    </div>
+                    <div class="col-md-8 d-flex align-items-end justify-content-end">
+                        <button type="submit" class="btn btn-primary">Сформировать заказ</button>
+                    </div>
+                </form>
+                <div class="alert alert-danger mt-3 d-none" id="checkoutError"></div>
+                <div class="alert alert-success mt-3 d-none" id="checkoutOk"></div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+(function(){
+    async function mutate(id, delta){
+        try{
+            const res = await fetch('/api/cart/add',{
+                method:'POST',
+                headers:{'Content-Type':'application/json','X-CSRFToken':(window.__csrftoken||'')},
+                body: JSON.stringify({ product_id:id, delta:delta })
+            });
+            const data = await res.json();
+            if(!data.ok) return;
+            const qtyEl = document.getElementById('qty-'+id);
+            if(qtyEl){ qtyEl.textContent = data.qty; }
+            // Обновление страницы без полной перезагрузки опустим: сумма пересчитается при F5
+            // Минимум JS по требованиям
+        }catch(e){}
+    }
+    document.querySelectorAll('.js-dec').forEach(b=>b.addEventListener('click',()=>mutate(b.dataset.id,-1)));
+    document.querySelectorAll('.js-inc').forEach(b=>b.addEventListener('click',()=>mutate(b.dataset.id,1)));
+
+    document.getElementById('checkoutForm')?.addEventListener('submit', async function(e){
+        e.preventDefault();
+        const pass = document.getElementById('confirmPassword').value;
+        const errBox = document.getElementById('checkoutError');
+        const okBox = document.getElementById('checkoutOk');
+        errBox.classList.add('d-none'); okBox.classList.add('d-none');
+        try{
+            const res = await fetch('/api/checkout',{
+                method:'POST',
+                headers:{'Content-Type':'application/json','X-CSRFToken':(window.__csrftoken||'')},
+                body: JSON.stringify({ password: pass })
+            });
+            const data = await res.json();
+            if(!data.ok){
+                errBox.textContent = data.error || 'Ошибка оформления';
+                errBox.classList.remove('d-none');
+                return;
+            }
+            okBox.textContent = `Заказ #${data.order_id} оформлен. Сумма: ${data.total} ₽`;
+            okBox.classList.remove('d-none');
+        }catch(err){
+            errBox.textContent = 'Ошибка соединения';
+            errBox.classList.remove('d-none');
+        }
+    });
+})();
+</script>
+{% endblock %}
+
+
