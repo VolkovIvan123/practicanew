@@ -39,16 +39,31 @@ class Product(models.Model):
 
 class Order(models.Model):
     """Заказ пользователя"""
+    STATUS_CHOICES = [
+        ('new', 'Новый'),
+        ('processing', 'В обработке'),
+        ('shipped', 'Отправлен'),
+        ('delivered', 'Доставлен'),
+        ('cancelled', 'Отменен'),
+    ]
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создан")
     total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Сумма")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new', verbose_name="Статус")
 
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
+        ordering = ['-created_at']  # От новых к старым
 
     def __str__(self):
         return f"Заказ #{self.id} от {self.created_at.strftime('%d.%m.%Y %H:%M')}"
+    
+    @property
+    def can_be_deleted(self):
+        """Проверка, можно ли удалить заказ (только новые)"""
+        return self.status == 'new'
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name="Заказ")

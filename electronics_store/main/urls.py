@@ -18,4 +18,5 @@ urlpatterns = [
     path('api/profile/update', views.api_profile_update, name='api_profile_update'),
     path('api/cart/add', views.api_cart_add, name='api_cart_add'),
     path('api/checkout', views.api_checkout, name='api_checkout'),
+    path('api/order/<int:order_id>/delete', views.api_order_delete, name='api_order_delete'),
 ]

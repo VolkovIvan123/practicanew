@@ -56,9 +56,12 @@ def contacts(request):
 def profile(request):
     """Страница профиля пользователя"""
     user_profile = request.user.userprofile
+    # Получаем заказы пользователя, упорядоченные от новых к старым
+    orders = Order.objects.filter(user=request.user).prefetch_related('items__product').order_by('-created_at')
     context = {
         'user_profile': user_profile,
-        'user_sessions': UserSession.objects.filter(user=request.user, is_active=True).order_by('-last_activity')[:5]
+        'user_sessions': UserSession.objects.filter(user=request.user, is_active=True).order_by('-last_activity')[:5],
+        'orders': orders
     }
     return render(request, 'profile.html', context)
 
@@ -324,3 +327,29 @@ def api_profile_update(request):
     profile.save()
 
     return JsonResponse({'ok': True, 'message': 'Профиль обновлён'})
+
+@login_required
+@require_POST
+def api_order_delete(request, order_id):
+    """Удаление нового заказа"""
+    try:
+        order = Order.objects.get(id=order_id, user=request.user)
+    except Order.DoesNotExist:
+        return JsonResponse({'ok': False, 'error': 'Заказ не найден'}, status=404)
+    
+    # Проверяем, что заказ можно удалить (только новые)
+    if not order.can_be_deleted:
+        return JsonResponse({'ok': False, 'error': 'Можно удалить только новые заказы'}, status=400)
+    
+    # Возвращаем товары на склад
+    try:
+        with transaction.atomic():
+            for item in order.items.all():
+                product = item.product
+                product.stock += item.quantity
+                product.in_stock = True
+                product.save()
+            order.delete()
+            return JsonResponse({'ok': True, 'message': 'Заказ удален'})
+    except Exception as e:
+        return JsonResponse({'ok': False, 'error': 'Ошибка при удалении заказа'}, status=500)
