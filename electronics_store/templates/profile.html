@@ -84,6 +84,7 @@
                                 <td>
                                     <span class="badge 
                                         {% if order.status == 'new' %}bg-primary
+                                        {% elif order.status == 'confirmed' %}bg-success
                                         {% elif order.status == 'processing' %}bg-info
                                         {% elif order.status == 'shipped' %}bg-warning
                                         {% elif order.status == 'delivered' %}bg-success
@@ -91,6 +92,9 @@
                                         {% endif %}">
                                         {{ order.get_status_display }}
                                     </span>
+                                    {% if order.status == 'cancelled' and order.cancellation_reason %}
+                                    <br><small class="text-danger mt-1 d-block">Причина: {{ order.cancellation_reason }}</small>
+                                    {% endif %}
                                 </td>
                                 <td><strong>{{ order.total_price }} ₽</strong></td>
                                 <td>

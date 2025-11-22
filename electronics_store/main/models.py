@@ -41,6 +41,7 @@ class Order(models.Model):
     """Заказ пользователя"""
     STATUS_CHOICES = [
         ('new', 'Новый'),
+        ('confirmed', 'Подтвержден'),
         ('processing', 'В обработке'),
         ('shipped', 'Отправлен'),
         ('delivered', 'Доставлен'),
@@ -51,6 +52,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создан")
     total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Сумма")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new', verbose_name="Статус")
+    cancellation_reason = models.TextField(blank=True, null=True, verbose_name="Причина отказа")
 
     class Meta:
         verbose_name = "Заказ"
@@ -64,6 +66,19 @@ class Order(models.Model):
     def can_be_deleted(self):
         """Проверка, можно ли удалить заказ (только новые)"""
         return self.status == 'new'
+    
+    @property
+    def items_count(self):
+        """Общее количество товаров в заказе"""
+        return sum(item.quantity for item in self.items.all())
+    
+    @property
+    def customer_full_name(self):
+        """Полное имя заказчика"""
+        profile = getattr(self.user, 'userprofile', None)
+        if profile:
+            return profile.full_name
+        return f"{self.user.first_name} {self.user.last_name}".strip() or self.user.username
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items', verbose_name="Заказ")
